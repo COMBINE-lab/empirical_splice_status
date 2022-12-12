@@ -1,14 +1,14 @@
 use anyhow::Result;
+use bincode;
 use kseq::parse_path;
 use memmap::Mmap;
+use serde::{Deserialize, Serialize};
 use std::env::args;
 use std::fmt;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 use suffine::MultiDocIndex;
-use bincode;
-use serde::{Deserialize, Serialize};
 
 fn open_and_map<P: AsRef<Path>>(path: P) -> Result<Mmap> {
     let file = File::open(&path)?;

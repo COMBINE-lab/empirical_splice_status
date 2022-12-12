@@ -3,7 +3,6 @@ use kseq::parse_path;
 use std::env::args;
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use std::path::{Path, PathBuf};
 use suffine::MultiDocIndexBuilder;
 
 use bincode;
