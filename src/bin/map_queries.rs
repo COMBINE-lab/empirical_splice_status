@@ -98,9 +98,9 @@ fn main() -> Result<(), anyhow::Error> {
     // let mut records = parse_reader(File::open(path).unwrap()).unwrap();
     while let Some(record) = records.iter_record().unwrap() {
         let query = record.seq();
-        let query_rc = revcomp(query);
         let mut had_nascent = false;
         let mut had_mature = false;
+        let query_rc = revcomp(query);
         let mut status: Option<SplicingStatus> = None;
         for q in [query, &query_rc] {
             for (doc_id, _pos) in multi_doc_index.doc_positions(q) {
@@ -117,10 +117,10 @@ fn main() -> Result<(), anyhow::Error> {
                     break;
                 }
             }
-            if let Some(s) = status {
-                writeln!(lock, "{}\t{}", record.head(), s)?;
-                break;
-            }
+            if had_nascent && had_mature { break; }
+        }
+        if let Some(s) = status {
+            writeln!(lock, "{}\t{}", record.head(), s)?;
         }
     }
     Ok(())
