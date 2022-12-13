@@ -8,7 +8,10 @@ use std::fmt;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
+use std::path::PathBuf;
 use suffine::MultiDocIndex;
+use clap::Parser;
+
 
 fn open_and_map<P: AsRef<Path>>(path: P) -> Result<Mmap> {
     let file = File::open(&path)?;
@@ -76,10 +79,26 @@ fn is_dna(dna: char) -> bool {
     }
 }
 
+/// Match reads against index
+#[derive(Parser, Debug)]
+#[command(author, version, about)]
+struct Args {
+    /// path to index (prefix)
+    index: PathBuf,
+
+    /// path to seuqencing reads to map
+    reads: PathBuf,
+}
+
+
 fn main() -> Result<(), anyhow::Error> {
-    let base_filename = args().nth(1).unwrap();
-    let text_filename = base_filename.clone() + ".btex";
-    let idx_filename = base_filename.clone() + ".idx";
+    let args = Args::parse();
+
+    let base_filename = args.index;
+    let mut text_filename = base_filename.clone();
+    text_filename.set_extension("btex");
+    let mut idx_filename = base_filename.clone();
+    idx_filename.set_extension(".idx");
 
     let text_file = File::open(text_filename).unwrap();
     let mut reader = BufReader::new(text_file);
@@ -88,7 +107,7 @@ fn main() -> Result<(), anyhow::Error> {
     let m_index_mmap = open_and_map(idx_filename)?;
     let multi_doc_index = MultiDocIndex::from_bytes(&txp_info.text, &m_index_mmap)?;
 
-    let path: String = args().nth(2).unwrap();
+    let path = args.reads; 
     let mut records = parse_path(path).unwrap();
 
     use std::io::Write;

@@ -12,3 +12,4 @@ memmap = "0.7.0"
 anyhow = "1.0.31"
 serde = { version = "1.0", features = ["derive"] }
 bincode = "1.2.1"
+clap = { version = "4.0.29", features = ["derive"] }
