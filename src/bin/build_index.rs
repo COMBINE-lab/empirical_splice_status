@@ -1,11 +1,10 @@
 use bincode::serialize_into;
+use clap::Parser;
 use kseq::parse_path;
-use std::env::args;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
 use suffine::MultiDocIndexBuilder;
-use clap::Parser;
 
 use bincode;
 use serde::{Deserialize, Serialize};
@@ -16,27 +15,26 @@ struct TextInfo {
     pub target_names: Vec<String>,
 }
 
-/// Simple program to greet a person
+/// Build index for exact matching
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
-   /// Name of the person to greet
-   reference: PathBuf,
+    /// path to the reference to index
+    reference: PathBuf,
 
-   /// Number of times to greet
-   index: String,
+    /// base prefix where index will be written
+    index: String,
 }
 
 fn main() {
-
     let args = Args::parse();
 
-    let m_index_base = args.index;//args().nth(2).unwrap();
+    let m_index_base = args.index; //args().nth(2).unwrap();
     let m_text_file = File::create(m_index_base.clone() + ".btex").unwrap();
     let m_index_file = File::create(m_index_base + ".idx").unwrap();
     let mut m_index_writer = BufWriter::new(m_index_file);
 
-    let path: PathBuf = args.reference;//args().nth(1).unwrap();
+    let path: PathBuf = args.reference; //args().nth(1).unwrap();
     let mut records = parse_path(path).unwrap();
     let mut txp_info = TextInfo {
         text: String::new(),

@@ -1,17 +1,15 @@
 use anyhow::Result;
 use bincode;
+use clap::Parser;
 use kseq::parse_path;
 use memmap::Mmap;
 use serde::{Deserialize, Serialize};
-use std::env::args;
 use std::fmt;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 use std::path::PathBuf;
 use suffine::MultiDocIndex;
-use clap::Parser;
-
 
 fn open_and_map<P: AsRef<Path>>(path: P) -> Result<Mmap> {
     let file = File::open(&path)?;
@@ -90,7 +88,6 @@ struct Args {
     reads: PathBuf,
 }
 
-
 fn main() -> Result<(), anyhow::Error> {
     let args = Args::parse();
 
@@ -107,7 +104,7 @@ fn main() -> Result<(), anyhow::Error> {
     let m_index_mmap = open_and_map(idx_filename)?;
     let multi_doc_index = MultiDocIndex::from_bytes(&txp_info.text, &m_index_mmap)?;
 
-    let path = args.reads; 
+    let path = args.reads;
     let mut records = parse_path(path).unwrap();
 
     use std::io::Write;
@@ -136,7 +133,9 @@ fn main() -> Result<(), anyhow::Error> {
                     break;
                 }
             }
-            if had_nascent && had_mature { break; }
+            if had_nascent && had_mature {
+                break;
+            }
         }
         if let Some(s) = status {
             writeln!(lock, "{}\t{}", record.head(), s)?;
