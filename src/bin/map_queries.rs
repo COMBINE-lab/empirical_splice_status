@@ -95,7 +95,7 @@ fn main() -> Result<(), anyhow::Error> {
     let mut text_filename = base_filename.clone();
     text_filename.set_extension("btex");
     let mut idx_filename = base_filename.clone();
-    idx_filename.set_extension(".idx");
+    idx_filename.set_extension("idx");
 
     let text_file = File::open(text_filename).unwrap();
     let mut reader = BufReader::new(text_file);
