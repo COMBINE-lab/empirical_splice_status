@@ -1,4 +1,4 @@
-# empirical_splice_status
+# Evaluate empirical splicing status of "perfect" sequencing reads
 
 ### building
 
